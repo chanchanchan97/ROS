@@ -1,0 +1,359 @@
+<?xml version="1.0"?>  
+  
+<robot xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"   
+    xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"   
+    xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"   
+    xmlns:xacro="http://ros.org/wiki/xacro"   
+    name="smartcar_gazebo">  
+  
+<!-- ASUS Xtion PRO camera for simulation -->  
+<!-- gazebo_ros_wge100 plugin is in kt2_gazebo_plugins package -->  
+<xacro:macro name="smartcar_sim">  
+	<gazebo reference="base_footprint">
+        <turnGravityOff>false</turnGravityOff>
+    </gazebo>
+
+    <gazebo reference="base_link">  
+        <material>Gazebo/Blue</material>  
+    </gazebo>  
+
+    <gazebo reference="left_front_wheel">  
+        <material>Gazebo/FlatBlack</material>  
+    </gazebo>  
+  
+    <gazebo reference="right_front_wheel">  
+        <material>Gazebo/FlatBlack</material>  
+    </gazebo>  
+  
+    <gazebo reference="left_back_wheel">  
+        <material>Gazebo/FlatBlack</material>  
+    </gazebo>  
+  
+    <gazebo reference="right_back_wheel">  
+        <material>Gazebo/FlatBlack</material>  
+    </gazebo>
+
+  
+    <gazebo reference="left_bridge">  
+        <material>Gazebo/Red</material>  
+    </gazebo>
+    
+    <gazebo reference="right_bridge">  
+        <material>Gazebo/Red</material>  
+    </gazebo>
+
+  
+    <gazebo reference="camera_link">  
+        <material>Gazebo/White</material>  
+    </gazebo>
+
+	<gazebo reference="carriage_front">  
+        <material>Gazebo/FlatBlack</material>  
+    </gazebo>
+   
+    <gazebo reference="carriage_left">  
+        <material>Gazebo/FlatBlack</material>  
+    </gazebo>
+    
+    <gazebo reference="carriage_right">  
+        <material>Gazebo/FlatBlack</material>  
+    </gazebo>
+    
+    <gazebo reference="carriage_back">  
+        <material>Gazebo/FlatBlack</material>  
+    </gazebo>
+    
+    <gazebo reference="laser_link">  
+        <material>Gazebo/FlatBlack</material>  
+    </gazebo>
+    
+    <gazebo reference="Raspberry_Pi">  
+        <material>Gazebo/White</material>  
+    </gazebo>
+    
+    <gazebo reference="imu_link">  
+        <material>Gazebo/Yellow</material>  
+    </gazebo>
+    
+    <!-- IMU sensor -->
+    <gazebo reference="imu_link">
+        <gravity>true</gravity>
+        <sensor name="imu_sensor" type="imu">
+            <always_on>true</always_on>
+            <update_rate>100</update_rate>
+            <visualize>true</visualize>
+            <topic>__default_topic__</topic>
+            <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+                <topicName>imu</topicName>
+                <bodyName>imu_link</bodyName>
+                <updateRateHZ>100.0</updateRateHZ>
+                <gaussianNoise>0.0</gaussianNoise>
+                <xyzOffset>0 0 0</xyzOffset>
+                <rpyOffset>0 0 0</rpyOffset>
+                <frameName>imu_link</frameName>
+            </plugin>
+            <pose>0 0 0 0 0 0</pose>
+        </sensor>
+    </gazebo>
+    
+    <!-- camera -->
+  	<gazebo reference="camera_link">
+		<sensor type="camera" name="camera1">
+			<update_rate>30.0</update_rate>
+			<camera name="head">
+				<horizontal_fov>1.3962634</horizontal_fov>
+				<image>
+					<width>800</width>
+					<height>800</height>
+					<format>R8G8B8</format>
+				</image>
+				<clip>
+					<near>0.02</near>
+					<far>300</far>
+				</clip>
+				<noise>
+					<type>gaussian</type>
+					<!-- Noise is sampled independently per pixel on each frame.
+						That pixel's noise value is added to each of its color
+						channels, which at that point lie in the range [0,1]. -->
+					<mean>0.0</mean>
+					<stddev>0.007</stddev>
+				</noise>
+			</camera>
+			<plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+				<alwaysOn>true</alwaysOn>
+				<updateRate>0.0</updateRate>
+				<cameraName>camera</cameraName>
+				<imageTopicName>image_raw</imageTopicName>
+				<cameraInfoTopicName>camera_info</cameraInfoTopicName>
+				<frameName>camera_link</frameName>
+				<hackBaseline>0.07</hackBaseline>
+				<distortionK1>0.0</distortionK1>
+				<distortionK2>0.0</distortionK2>
+				<distortionK3>0.0</distortionK3>
+				<distortionT1>0.0</distortionT1>
+				<distortionT2>0.0</distortionT2>
+			</plugin>
+		</sensor>
+	</gazebo>
+	
+	<gazebo reference="laser_link">
+		<sensor type="ray" name="head_hokuyo_sensor">
+			<pose>0 0 0 0 0 0</pose>
+			<visualize>false</visualize>
+			<update_rate>40</update_rate>
+			<ray>
+				<scan>
+					<horizontal>
+						<samples>720</samples>
+						<resolution>1</resolution>
+						<min_angle>-1.570796</min_angle>
+						<max_angle>1.570796</max_angle>
+					</horizontal>
+				</scan>
+				<range>
+					<min>0.10</min>
+					<max>30.0</max>
+					<resolution>0.01</resolution>
+				</range>
+				<noise>
+					<type>gaussian</type>
+					<!-- Noise parameters based on published spec for Hokuyo laser
+						achieving "+-30mm" accuracy at range < 10m.  A mean of 0.0m and
+						stddev of 0.01m will put 99.7% of samples within 0.03m of the true
+						reading. -->
+					<mean>0.0</mean>
+					<stddev>0.01</stddev>
+				</noise>
+			</ray>
+			<plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_laser.so">
+				<topicName>laser/scan</topicName>
+				<frameName>laser_link</frameName>
+			</plugin>
+		</sensor>
+	</gazebo>
+  
+    <!-- Drive controller -->
+<!--	<gazebo>
+		<plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
+			<updateRate>100.0</updateRate>
+			<robotNamespace></robotNamespace>
+			<leftFrontJoint>left_front_wheel_joint</leftFrontJoint>
+			<rightFrontJoint>right_front_wheel_joint</rightFrontJoint>
+			<leftRearJoint>left_back_wheel_joint</leftRearJoint>
+			<rightRearJoint>right_back_wheel_joint</rightRearJoint>
+			<wheelSeparation>0.16</wheelSeparation>
+			<wheelDiameter>0.05</wheelDiameter>
+			<commandTopic>cmd_vel</commandTopic>
+			<odometryTopic>odom</odometryTopic>
+			<robotBaseFrame>base_footprint</robotBaseFrame>
+			<odometryFrame>odom</odometryFrame>
+			<torque>15</torque>
+			<topicName>cmd_vel</topicName>
+			<broadcastTF>1</broadcastTF>
+	  	</plugin>
+	</gazebo>
+-->
+<!--
+	<gazebo>
+            <plugin name="differential_drive_controller" 
+                    filename="libgazebo_ros_diff_drive.so">
+                <rosDebugLevel>Debug</rosDebugLevel>
+                <publishWheelTF>true</publishWheelTF>
+                <robotNamespace>/</robotNamespace>
+                <publishTf>1</publishTf>
+                <publishWheelJointState>true</publishWheelJointState>
+                <alwaysOn>true</alwaysOn>
+                <updateRate>100.0</updateRate>
+                <legacyMode>true</legacyMode>
+                <leftJoint>left_back_wheel_joint</leftJoint>
+                <rightJoint>right_back_wheel_joint</rightJoint>
+                <wheelSeparation>0.16</wheelSeparation>
+                <wheelDiameter>0.05</wheelDiameter>
+                <broadcastTF>1</broadcastTF>
+                <wheelTorque>20</wheelTorque>
+                <wheelAcceleration>1.8</wheelAcceleration>
+                <commandTopic>cmd_vel</commandTopic>
+                <odometryFrame>odom</odometryFrame> 
+                <odometryTopic>odom</odometryTopic> 
+                <robotBaseFrame>base_footprint</robotBaseFrame>
+            </plugin>
+        </gazebo>
+-->                
+	<!-- Transmission is important to link the joints and the controller -->
+	<transmission name="right_bridge_joint_trans">
+		<type>transmission_interface/SimpleTransmission</type>
+		<joint name="right_bridge_to_bridge" >
+			<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+		</joint>
+		<actuator name="right_bridge_joint_motor">
+			<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+			<mechanicalReduction>1</mechanicalReduction>
+			<motorTorqueConstant>100</motorTorqueConstant>
+		</actuator>
+	</transmission>	
+	
+	<transmission name="left_bridge_joint_trans">
+		<type>transmission_interface/SimpleTransmission</type>
+		<joint name="left_bridge_to_bridge" >
+			<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+		</joint>
+		<actuator name="left_bridge_joint_motor">
+			<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+			<mechanicalReduction>1</mechanicalReduction>
+			<motorTorqueConstant>100</motorTorqueConstant>
+		</actuator>
+	</transmission>
+<!--	
+	<transmission name="right_front_wheel_joint_trans">
+		<type>transmission_interface/SimpleTransmission</type>
+		<joint name="right_front_wheel_to_bridge" >
+			<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+		</joint>
+		<actuator name="right_front_wheel_joint_motor">
+			<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+			<mechanicalReduction>1</mechanicalReduction>
+		</actuator>
+	</transmission>	
+	
+	<transmission name="left_front_wheel_joint_trans">
+		<type>transmission_interface/SimpleTransmission</type>
+		<joint name="left_front_wheel_to_bridge" >
+			<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+		</joint>
+		<actuator name="left_front_wheel_joint_motor">
+			<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+			<mechanicalReduction>1</mechanicalReduction>
+		</actuator>
+	</transmission>
+-->		
+	<transmission name="right_back_wheel_joint_trans">
+		<type>transmission_interface/SimpleTransmission</type>
+		<joint name="right_back_wheel_joint" >
+			<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+		</joint>
+		<actuator name="right_back_wheel_joint_motor">
+			<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+			<mechanicalReduction>1</mechanicalReduction>
+		</actuator>
+	</transmission>			
+	
+	<transmission name="left_back_wheel_joint_trans">
+		<type>transmission_interface/SimpleTransmission</type>
+		<joint name="left_back_wheel_joint" >
+			<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+		</joint>
+		<actuator name="left_back_wheel_joint_motor">
+			<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+			<mechanicalReduction>1</mechanicalReduction>
+		</actuator>
+	</transmission>
+	
+	<!-- Friction Parametres -->
+<!--	
+	<gazebo reference="left_bridge">
+		<mu1>10000000000000</mu1>
+		<mu2>10000000000000</mu2>
+		<kp>100000000</kp>
+		<kd>1</kd>
+		<minDepth>0.01</minDepth>
+		<maxVel>100</maxVel>  
+	</gazebo>  
+
+	<gazebo reference="right_bridge">
+		<mu1>10000000000000</mu1>
+		<mu2>10000000000000</mu2>
+		<kp>100000000</kp>
+		<kd>1</kd>     
+		<minDepth>0.01</minDepth>
+		<maxVel>100</maxVel>      
+	</gazebo>
+-->	
+	<gazebo reference="right_back_wheel">
+		<mu1>100000000</mu1>
+		<mu2>100000000</mu2>
+		<kp>100000000</kp>
+		<kd>1</kd>
+		<minDepth>0.01</minDepth>
+		<maxVel>100</maxVel>  
+	</gazebo>  
+
+	<gazebo reference="left_back_wheel">
+		<mu1>100000000</mu1>
+		<mu2>100000000</mu2>
+		<kp>100000000</kp>
+		<kd>1</kd>     
+		<minDepth>0.01</minDepth>
+		<maxVel>100</maxVel>      
+	</gazebo>   
+
+	<gazebo reference="right_front_wheel">
+		<mu1>100000000</mu1>
+		<mu2>100000000</mu2>
+		<kp>100000000</kp>
+		<kd>1</kd>
+		<minDepth>0.01</minDepth>
+		<maxVel>100</maxVel>           
+	</gazebo> 
+
+	<gazebo reference="left_front_wheel">
+		<mu1>100000000</mu1>
+		<mu2>100000000</mu2>
+		<kp>100000000</kp>
+		<kd>1</kd>  
+		<minDepth>0.01</minDepth>
+		<maxVel>100</maxVel>          
+	</gazebo>
+	
+	<gazebo>
+		<plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+			<robotNamespace></robotNamespace>
+			<robotParam>robot_description</robotParam>
+      		<robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+			<legacyModeNS>true</legacyModeNS>
+		</plugin>
+	</gazebo>
+
+</xacro:macro>  
+  
+</robot>
