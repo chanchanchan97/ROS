@@ -1,0 +1,3 @@
+gazebo_ros_control/pid_gains:
+  right_bridge_to_bridge: {p: 100, i: 1, d: 0.5}
+  left_bridge_to_bridge: {p: 100, i: 1, d: 0.5}

@@ -1,0 +1,50 @@
+joint_state_controller:
+  type: "joint_state_controller/JointStateController"
+  publish_rate: 50  
+
+rear_right_velocity_controller:
+  type: "velocity_controllers/JointVelocityController"
+  joint: right_back_wheel_joint
+  pid: {p: 100.0, i: 0.01, d: 10.0}
+rear_left_velocity_controller:
+  type: "velocity_controllers/JointVelocityController"
+  joint: left_back_wheel_joint
+  pid: {p: 100.0, i: 0.01, d: 10.0}
+right_bridge_position_controller:
+  type: "effort_controllers/JointPositionController"
+  joint: right_bridge_to_bridge
+  pid: {p: 40.0, i: 0.0, d: 1.0}
+left_bridge_position_controller:
+  type: "effort_controllers/JointPositionController"
+  joint: left_bridge_to_bridge
+  pid: {p: 40.0, i: 0.0, d: 1.0}
+
+#gazebo_ros_control:
+#  pid_gains:
+#    right_back_wheel_joint:
+#      p: 1.0
+#      i: 0.5
+#      d: 0.0
+#    left_back_wheel_joint:
+#      p: 1.0
+#      i: 0.5
+#      d: 0.0
+
+#mobile_base_controller:
+#  type: "diff_drive_controller/DiffDriveController"
+#  left_wheel: 'left_back_wheel_joint'
+#  right_wheel: 'right_back_wheel_joint'
+#  publish_rate: 200
+#  pose_covariance_diagonal: [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 0.03]
+#  twist_covariance_diagonal: [0.001, 0.001, 0.001, 1000000.0, 1000000.0, 0.03]
+
+#  wheel_separation: 0.16
+#  wheel_radius: 0.025
+
+#  wheel_separation_multiplier: 1.0
+#  wheel_radius_multiplier: 1.0
+
+#  cmd_vel_timeout: 0.2
+
+#  base_frame_id: base_footprint
+
