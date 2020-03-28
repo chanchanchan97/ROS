@@ -1,0 +1,40 @@
+<launch>
+    <!-- 设置launch文件的参数 -->
+    <arg name="paused" default="false"/>
+    <arg name="use_sim_time" default="true"/>
+    <arg name="gui" default="true"/>
+    <arg name="headless" default="false"/>
+    <arg name="debug" default="false"/>
+
+    <!-- 运行gazebo仿真环境 -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="debug" value="$(arg debug)" />
+        <arg name="gui" value="$(arg gui)" />
+        <arg name="paused" value="$(arg paused)"/>
+        <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+        <arg name="headless" value="$(arg headless)"/>
+    </include>
+   
+    <!-- Load the URDF/Xacro model of our robot -->  
+    <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find smartcar_description)/urdf/xacro/smartcar.xacro'" />
+ 	
+ 	<!-- Load joint controller configurations from YAML file to parameter server -->
+ 	<rosparam file="$(find smartcar_description)/config/smartcar_joint.yaml" command="load"/>
+<!--	<rosparam file="$(find smartcar_description)/config/smartcar_joint_PID.yaml" command="load"/>   -->
+ 	
+ 	<node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="joint_state_controller rear_right_velocity_controller rear_left_velocity_controller right_bridge_position_controller left_bridge_position_controller"/>
+
+<!-- 	
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" >  
+    </node>
+-->    
+	<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
+	</node>
+<!--  
+    <node pkg="tf" type="static_transform_publisher" name="odom_left_wheel_broadcaster" args="0 0 0 0 0 0 /base_link /left_front_link 100" />  
+    <node pkg="tf" type="static_transform_publisher" name="odom_right_wheel_broadcaster" args="0 0 0 0 0 0 /base_link /right_front_link 100" />  
+-->  
+    <!-- 在gazebo中加载机器人模型-->
+    <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+          args="-urdf -model mrobot -param robot_description"/> 
+</launch>
