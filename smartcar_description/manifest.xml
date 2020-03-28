@@ -1,0 +1,15 @@
+<package>
+  <description brief="smartcar_description">
+
+     smartcar_description
+
+  </description>
+  <author>ubuntu16.04</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/smartcar_description</url>
+  <depend package="urdf"/>
+
+</package>
+
+
