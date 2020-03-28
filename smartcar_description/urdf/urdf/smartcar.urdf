@@ -1,0 +1,187 @@
+<?xml version="1.0"?>
+<robot name="smartcar">  
+<!-- Set the basis of smartcar -->
+	<link name="base_link">  
+    	<visual>  
+      		<geometry>  
+        		<box size="0.25 0.16 0.02"/>  
+    		</geometry>  
+    		<origin rpy="0 0 1.57075" xyz="0 0 0.055"/>  
+    		<material name="blue">  
+        		<color rgba="0 0 0.8 1"/>  
+    		</material>  
+    	</visual>  
+	</link>
+
+<!-- Set the right front wheel of smartcar -->	
+	<link name="right_front_wheel">  
+    	<visual>  
+      		<geometry>  
+       			<cylinder length="0.02" radius="0.025"/>  
+      		</geometry>  
+      		<material name="black">  
+        		<color rgba="0 0 0 1"/>  
+      		</material>  
+    	</visual>  
+	</link>
+
+<!-- Set the joint connecting the right front wheel and base_link -->
+	<joint name="right_front_wheel_joint" type="continuous">  
+    	<axis xyz="0 0 1"/>  
+    	<parent link="base_link"/>  
+    	<child link="right_front_wheel"/>
+    	<origin rpy="0 1.57075 0" xyz="0.08 0.1 0.025"/>    
+    	<limit effort="100" velocity="100"/>  
+    	<joint_properties damping="0.0" friction="0.0"/>  
+  	</joint>
+  
+<!-- Set the right back wheel of smartcar -->	
+  	<link name="right_back_wheel">  
+    	<visual>  
+      		<geometry>  
+        		<cylinder length="0.02" radius="0.025"/>  
+      		</geometry>   
+      		<material name="black">  
+        		<color rgba="0 0 0 1"/>  
+      		</material>  
+    	</visual>  
+  	</link>
+
+<!-- Set the joint connecting the right back wheel and base_link -->  	
+  	<joint name="right_back_wheel_joint" type="continuous">  
+    	<axis xyz="0 0 1"/>  
+    	<parent link="base_link"/>  
+    	<child link="right_back_wheel"/>   
+    	<origin rpy="0 1.57075 0" xyz="0.08 -0.1 0.025"/>
+    	<limit effort="100" velocity="100"/>  
+    	<joint_properties damping="0.0" friction="0.0"/>  
+	</joint> 
+
+<!-- Set the left front wheel of smartcar -->
+	<link name="left_front_wheel">  
+    	<visual>  
+      		<geometry>  
+        		<cylinder length="0.02" radius="0.025"/>  
+      		</geometry>   
+      		<material name="black">  
+        		<color rgba="0 0 0 1"/>  
+      		</material>  
+    	</visual>  
+  	</link>
+  
+<!-- Set the joint connecting the left front wheel and base_link -->
+  	<joint name="left_front_wheel_joint" type="continuous">  
+    	<axis xyz="0 0 1"/>  
+    	<parent link="base_link"/>  
+    	<child link="left_front_wheel"/>   
+    	<origin rpy="0 1.57075 0" xyz="-0.08 0.1 0.025"/>
+    	<limit effort="100" velocity="100"/>  
+    	<joint_properties damping="0.0" friction="0.0"/>  
+  	</joint>
+
+<!-- Set the left back wheel of smartcar -->
+  	<link name="left_back_wheel">  
+    	<visual>  
+      		<geometry>  
+        		<cylinder length="0.02" radius="0.025"/>  
+      		</geometry>  
+      		<material name="black">  
+        		<color rgba="0 0 0 1"/>  
+      		</material>  
+    	</visual>  
+  	</link>
+
+<!-- Set the joint connecting the left back wheel and base_link -->
+  	<joint name="left_back_wheel_joint" type="continuous">  
+    	<axis xyz="0 0 1"/>  
+    	<parent link="base_link"/>  
+    	<child link="left_back_wheel"/>
+    	<origin rpy="0 1.57075 0" xyz="-0.08 -0.1 0.025"/>   
+    	<limit effort="100" velocity="100"/>  
+    	<joint_properties damping="0.0" friction="0.0"/>  
+  	</joint>
+
+<!-- Set the left_bridge -->
+  	<link name="left_bridge">
+        <visual>
+            <geometry>
+                <box size="0.005 0.01 0.003"/>
+            </geometry>
+            <material name="red">  
+        		<color rgba="1 0 0 1"/>  
+      		</material>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="0.005 0.01 0.003"/>
+            </geometry>
+        </collision>
+    </link>
+    
+<!-- Set the joint connecting the left_front_wheel and bridge -->
+  	<joint name="left_bridge_to_bridge" type="revolute">
+		<parent link="head"/>
+        <child link="left_bridge"/>
+        <origin rpy="0 0 0" xyz="-0.06 0 -0.06"/>
+        <axis xyz="0 0 -1" />
+        <limit effort="2.5" velocity="0.1" lower="-0.785" upper="0.785" />
+    </joint>
+    
+<!-- Set the joint connecting the left_front_wheel and bridge -->
+  	<joint name="left_front_wheel_to_bridge" type="fixed">
+		<parent link="left_bridge"/>
+        <child link="left_front_wheel"/>
+        <origin rpy="0 1.57075 0" xyz="-0.02 0 0"/>
+    </joint>
+    
+<!-- Set the right_bridge -->
+  	<link name="right_bridge">
+        <visual>
+            <geometry>
+                <box size="0.005 0.01 0.003"/>
+            </geometry>
+            <material name="red">  
+        		<color rgba="1 0 0 1"/>  
+      		</material>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="0.005 0.01 0.003"/>
+            </geometry>
+        </collision>
+    </link>
+    
+<!-- Set the joint connecting the left_front_wheel and bridge -->
+  	<joint name="right_bridge_to_bridge" type="revolute">
+		<parent link="head"/>
+        <child link="right_bridge"/>
+        <origin rpy="0 0 0" xyz="0.06 0 -0.06"/>
+        <axis xyz="0 0 -1" />
+        <limit effort="2.5" velocity="0.1" lower="-0.785" upper="0.785" />
+    </joint>
+    
+<!-- Set the joint connecting the right_front_wheel and bridge -->
+  	<joint name="right_front_wheel_to_bridge" type="fixed">
+		<parent link="right_bridge"/>
+        <child link="right_front_wheel"/>
+        <origin rpy="0 1.57075 0" xyz="0.02 0 0"/>
+    </joint> 
+
+ 	<link name="head">  
+    	<visual>  
+      		<geometry>  
+        		<box size="0.02 0.03 0.03"/>  
+      		</geometry>  
+      		<material name="white">  
+        		<color rgba="1 1 1 1"/>  
+      		</material>  
+    	</visual>  
+  	</link>
+  	
+  	<joint name="tobox" type="fixed">  
+    	<parent link="base_link"/>  
+    	<child link="head"/>  
+    	<origin xyz="0 0.08 0.08"/>  
+  	</joint>  
+
+</robot>
