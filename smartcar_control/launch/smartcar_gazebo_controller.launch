@@ -1,0 +1,4 @@
+<launch>
+	<node name="smartcar_gazebo_controller" pkg="smartcar_control" type="smartcar_control_gazebo" output="screen">
+	</node>
+</launch>

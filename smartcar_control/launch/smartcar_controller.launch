@@ -1,0 +1,6 @@
+<launch>
+	<node name="smartcar_controller" pkg="smartcar_control" type="smartcar_control" output="screen">
+		<param name="scale_linear" value="0.1" type="double"/>
+    	<param name="scale_angular" value="0.4" type="double"/>
+	</node>
+</launch>
