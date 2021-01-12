@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<launch>
+    <node name="stanley_persuit" pkg="stanley_persuit" type="stanley_persuit.py" respawn="true" output="screen"/>
+</launch>
