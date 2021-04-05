@@ -1,0 +1,12 @@
+<launch>
+    <node pkg="robot_vision" name="vehicle_detector" type="vehicle_detector.py" output="screen">
+        <rosparam>
+            haar_scaleFactor: 1.2
+            haar_minNeighbors: 2
+            haar_minSize: 20
+            haar_maxSize: 55
+        </rosparam>
+        <param name="cascade_vehicle" value="$(find robot_vision)/data/haar_detectors/output.xml" />
+        <param name="video_vehicle" value="$(find robot_vision)/data/video/video3.mp4" />
+    </node>
+</launch>
